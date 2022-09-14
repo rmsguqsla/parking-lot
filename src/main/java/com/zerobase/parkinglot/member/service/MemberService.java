@@ -15,28 +15,28 @@ import java.util.List;
 public interface MemberService {
 
     // 회원가입
-    MemberDto registerMember(MemberRegister.Request request);
+    MemberDto registerMember(String email, String name, String password, String phone);
 
     // 차번호 등록
-    CarDto registerCar(Long id, Request request);
+    CarDto registerCar(Long id, String carNumber);
 
     // 회원수정
-    MemberDto updateMember(Long id, MemberUpdate.Request request);
+    MemberDto updateMember(Long id, String name, String phone);
 
     // 비밀번호 변경
-    MemberDto resetPassword(Long id, MemberResetPassword.Request request);
+    MemberDto resetPassword(Long id, String password, String newPassword);
 
     // 회원탈퇴
-    void deleteMember(Long id, MemberDelete.Request request);
+    void deleteMember(Long id, String password);
 
     // 차번호 삭제
-    void deleteCar(Long id, CarDelete.Request request);
+    void deleteCar(Long id, String carNumber);
 
     // 차번호 수정
-    CarDto updateCar(Long id, CarUpdate.Request request);
+    CarDto updateCar(Long id, String carNumber, String newCarNumber);
 
     // 로그인 토큰 생성
-    String login(MemberLogin.Request request);
+    String login(String email, String password);
 
-    List<CarDto> getCars(Long id);
+    List<CarDto> getCarList(Long id);
 }
