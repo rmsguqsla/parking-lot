@@ -3,8 +3,11 @@ package com.zerobase.parkinglot.parkinglot.service;
 import com.zerobase.parkinglot.parkinglot.entity.ParkingLot;
 import com.zerobase.parkinglot.parkinglot.exception.ParkingLotException;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotDto;
+import com.zerobase.parkinglot.parkinglot.model.ParkingLotUserInfo;
+import com.zerobase.parkinglot.parkinglot.repository.ParkingLotCustomRepository;
 import com.zerobase.parkinglot.parkinglot.repository.ParkingLotRepository;
 import com.zerobase.parkinglot.error.ErrorCode;
+import com.zerobase.parkinglot.parkinglot.type.SearchType;
 import com.zerobase.parkinglot.utils.GeoCodingUtil;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class ParkingLotServiceImpl implements ParkingLotService{
 
     private final ParkingLotRepository parkingLotRepository;
+    private final ParkingLotCustomRepository parkingLotCustomRepository;
 
     @Override
     public ParkingLotDto parkingLotRegister(String name, String address, int spaceCount) {
@@ -45,7 +49,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     public List<ParkingLotDto> getParkingLots() {
 
         return ParkingLotDto.fromEntityList(
-            parkingLotRepository.findAll()
+            parkingLotRepository.findAllByUseYn(true)
         );
 
     }
@@ -79,8 +83,27 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         return ParkingLotDto.fromEntity(findParkingLotById(id));
     }
 
+    @Override
+    public List<ParkingLotUserInfo> getParkingLotsMyAround(double myLat, double myLng) {
+        return parkingLotCustomRepository.findAllByDistanceLimit20(myLat, myLng);
+    }
+
+    @Override
+    public List<ParkingLotUserInfo> getParkingLotsSearch(
+        double myLat, double myLng,
+        String searchType, String searchValue) {
+
+        for (SearchType type : SearchType.values()) {
+            if (type.getDescription().equals(searchType)) {
+                return parkingLotCustomRepository.findAllBySearch(myLat, myLng, searchType, searchValue);
+            }
+        }
+
+        throw new ParkingLotException(ErrorCode.SEARCH_TYPE_NOT_EXIST);
+    }
+
     private ParkingLot findParkingLotById(Long id) {
-        return parkingLotRepository.findById(id)
+        return parkingLotRepository.findByIdAndUseYn(id, true)
             .orElseThrow(() -> new ParkingLotException(ErrorCode.PARKING_LOT_NOT_FOUND));
     }
 }

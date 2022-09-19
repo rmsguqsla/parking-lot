@@ -8,15 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zerobase.parkinglot.parkinglot.controller.AdminApiParkingLotController;
+import com.zerobase.parkinglot.parkinglot.controller.ApiAdminParkingLotController;
 import com.zerobase.parkinglot.parkinglot.service.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(AdminApiParkingLotController.class)
-public class AdminApiParkingLotControllerTest {
+@WebMvcTest(ApiAdminParkingLotController.class)
+public class ApiAdminParkingLotControllerTest {
 
     @MockBean
     private ParkingLotService parkingLotService;

@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class AdminApiParkingLotController {
+public class ApiAdminParkingLotController {
 
     private final ParkingLotService parkingLotService;
 
+    // 주차장 등록 API
     @PostMapping("/api/admin/parking-lot")
     public Response parkingLotRegister(
         @RequestBody @Valid ParkingLotRegister.Request request) {
@@ -34,6 +35,7 @@ public class AdminApiParkingLotController {
         );
     }
 
+    // 주차장 목록 API
     @GetMapping("/api/admin/parking-lots")
     public List<ParkingLotInfo> getParkingLots() {
 
@@ -41,6 +43,7 @@ public class AdminApiParkingLotController {
 
     }
 
+    // 주차장 상세 API
     @GetMapping("/api/admin/parking-lot/{id}")
     public ParkingLotInfo getParkingLot(@PathVariable Long id) {
 
@@ -48,6 +51,7 @@ public class AdminApiParkingLotController {
 
     }
 
+    // 주차장 수정(삭제) API
     @PutMapping("/api/admin/parking-lot/{id}")
     public ParkingLotUpdate.Response parkingLotUpdate(
         @PathVariable Long id,
