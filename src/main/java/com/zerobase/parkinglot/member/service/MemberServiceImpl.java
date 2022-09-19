@@ -9,7 +9,7 @@ import com.zerobase.parkinglot.member.model.CarDto;
 import com.zerobase.parkinglot.member.model.MemberDto;
 import com.zerobase.parkinglot.member.repository.CarRepository;
 import com.zerobase.parkinglot.member.repository.MemberRepository;
-import com.zerobase.parkinglot.member.type.ErrorCode;
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.type.Role;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -103,7 +103,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<CarDto> getCarList(Long id) {
+    public List<CarDto> getCars(Long id) {
 
         return CarDto.fromEntityList(findCarByMember(findMemberById(id)));
 

@@ -26,7 +26,7 @@ import com.zerobase.parkinglot.member.model.MemberRegister;
 import com.zerobase.parkinglot.member.model.MemberResetPassword;
 import com.zerobase.parkinglot.member.model.MemberUpdate;
 import com.zerobase.parkinglot.member.service.MemberService;
-import com.zerobase.parkinglot.member.type.ErrorCode;
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.type.Role;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -233,7 +233,7 @@ public class ApiMemberControllerTest {
                     .build()
             );
 
-        given(memberService.getCarList(anyLong()))
+        given(memberService.getCars(anyLong()))
             .willReturn(carDtoList);
 
         //when
@@ -252,7 +252,7 @@ public class ApiMemberControllerTest {
     void GetCarsTest_fail_memberNotFound() throws Exception {
 
         //given
-        given(memberService.getCarList(anyLong()))
+        given(memberService.getCars(anyLong()))
             .willThrow(new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 
         //when

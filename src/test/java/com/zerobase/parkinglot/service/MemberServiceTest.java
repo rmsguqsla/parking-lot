@@ -14,14 +14,11 @@ import com.zerobase.parkinglot.member.entity.Member;
 import com.zerobase.parkinglot.member.exception.MemberException;
 import com.zerobase.parkinglot.member.model.CarDto;
 import com.zerobase.parkinglot.member.model.MemberDto;
-import com.zerobase.parkinglot.member.model.MemberRegister;
-import com.zerobase.parkinglot.member.model.MemberRegister.Request;
 import com.zerobase.parkinglot.member.repository.CarRepository;
 import com.zerobase.parkinglot.member.repository.MemberRepository;
 import com.zerobase.parkinglot.member.service.MemberServiceImpl;
-import com.zerobase.parkinglot.member.type.ErrorCode;
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.type.Role;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +28,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -232,7 +228,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    void getCarList_success() {
+    void getCars_success() {
 
         //given
         Member member = Member.builder()
@@ -262,7 +258,7 @@ public class MemberServiceTest {
             .willReturn(carList);
 
         //when
-        List<CarDto> carDtoList = memberServiceImpl.getCarList(1L);
+        List<CarDto> carDtoList = memberServiceImpl.getCars(1L);
 
         //then
         assertEquals(3, carDtoList.size());
@@ -287,7 +283,7 @@ public class MemberServiceTest {
 
         //when
         MemberException exception = assertThrows(MemberException.class,
-            () -> memberServiceImpl.getCarList(anyLong()));
+            () -> memberServiceImpl.getCars(anyLong()));
 
         //then
         assertEquals(ErrorCode.MEMBER_NOT_FOUND, exception.getErrorCode());

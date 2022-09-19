@@ -94,11 +94,11 @@ public class ApiMemberController {
     }
 
     // 등록된 차번호 목록
-    @GetMapping("/api/member/{id}/car/list")
-    public List<CarInfo> getCarList(
+    @GetMapping("/api/member/{id}/cars")
+    public List<CarInfo> getCars(
         @PathVariable Long id) {
 
-        return CarInfo.from(memberService.getCarList(id));
+        return CarInfo.listFrom(memberService.getCars(id));
 
     }
 

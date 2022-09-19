@@ -38,5 +38,5 @@ public interface MemberService {
     // 로그인 토큰 생성
     String login(String email, String password);
 
-    List<CarDto> getCarList(Long id);
+    List<CarDto> getCars(Long id);
 }
