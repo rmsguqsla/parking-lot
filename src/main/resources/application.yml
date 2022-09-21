@@ -11,6 +11,5 @@ spring:
       ddl-auto: update
     show-sql: true
 
-google:
-  geocoding:
-    key: "AIzaSyB5J_0k9aKuHEIjTJR7fYwoPx0kSU09lNQ"
+geocoding:
+  key: AIzaSyB5J_0k9aKuHEIjTJR7fYwoPx0kSU09lNQ

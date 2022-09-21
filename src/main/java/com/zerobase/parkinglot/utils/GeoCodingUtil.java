@@ -4,23 +4,27 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
-import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Slf4j
+@Component
 public class GeoCodingUtil {
 
-//    @Value("${google.geocoding.key}")
-    private static final String KEY = "AIzaSyB5J_0k9aKuHEIjTJR7fYwoPx0kSU09lNQ";
+    @Value("${geocoding.key}")
+    private String key;
     private static final String STATIC_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s";
 
-    public static double[] getGeoCode(String address) {
+    public double[] getGeoCode(String address) {
+        log.info(key);
         try {
             String urlString = String.format(STATIC_URL,
                 URLEncoder.encode(address, "UTF-8"),
-                KEY
+                key
             );
 
             URL url = new URL(urlString);
