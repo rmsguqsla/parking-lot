@@ -7,6 +7,8 @@ import com.zerobase.parkinglot.parkinglot.model.ParkingLotRegister.Response;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotUpdate;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotUserInfo;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotUserInfoDetail;
+import com.zerobase.parkinglot.parkinglot.model.TicketInfo;
+import com.zerobase.parkinglot.parkinglot.model.TicketUserInfo;
 import com.zerobase.parkinglot.parkinglot.service.ParkingLotService;
 import java.util.List;
 import javax.validation.Valid;
@@ -49,8 +51,9 @@ public class ApiParkingLotController {
 
         ParkingLotDto parkingLotDto = parkingLotService.getParkingLot(id);
         int reservedCount = 0;
+        List<TicketUserInfo> ticketUserInfoList = parkingLotService.getUsableTickets(id);
 
-        return ParkingLotUserInfoDetail.from(parkingLotDto, reservedCount);
+        return ParkingLotUserInfoDetail.from(parkingLotDto, reservedCount, ticketUserInfoList);
     }
 
 }

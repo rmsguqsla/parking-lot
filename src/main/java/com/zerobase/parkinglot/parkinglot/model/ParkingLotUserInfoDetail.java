@@ -1,5 +1,6 @@
 package com.zerobase.parkinglot.parkinglot.model;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,13 +24,17 @@ public class ParkingLotUserInfoDetail {
 
     private int remainCount;
 
-    public static ParkingLotUserInfoDetail from(ParkingLotDto dto, int reservedCount) {
+    private List<TicketUserInfo> ticketInfoList;
+
+    public static ParkingLotUserInfoDetail from(ParkingLotDto dto, int reservedCount,
+        List<TicketUserInfo> ticketUserInfoList) {
         return ParkingLotUserInfoDetail.builder()
             .id(dto.getId())
             .name(dto.getName())
             .address(dto.getAddress())
             .spaceCount(dto.getSpaceCount())
             .remainCount(dto.getSpaceCount() - reservedCount)
+            .ticketInfoList(ticketUserInfoList)
             .build();
     }
 }
