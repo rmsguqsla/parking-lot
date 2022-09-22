@@ -10,3 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+geocoding:
+  key: AIzaSyB5J_0k9aKuHEIjTJR7fYwoPx0kSU09lNQ

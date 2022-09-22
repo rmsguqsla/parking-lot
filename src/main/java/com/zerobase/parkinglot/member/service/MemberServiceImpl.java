@@ -5,25 +5,17 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.zerobase.parkinglot.member.entity.Car;
 import com.zerobase.parkinglot.member.entity.Member;
 import com.zerobase.parkinglot.member.exception.MemberException;
-import com.zerobase.parkinglot.member.model.CarDelete;
 import com.zerobase.parkinglot.member.model.CarDto;
-import com.zerobase.parkinglot.member.model.CarRegister;
-import com.zerobase.parkinglot.member.model.CarUpdate;
-import com.zerobase.parkinglot.member.model.MemberDelete;
 import com.zerobase.parkinglot.member.model.MemberDto;
-import com.zerobase.parkinglot.member.model.MemberLogin;
-import com.zerobase.parkinglot.member.model.MemberRegister.Request;
-import com.zerobase.parkinglot.member.model.MemberResetPassword;
-import com.zerobase.parkinglot.member.model.MemberUpdate;
 import com.zerobase.parkinglot.member.repository.CarRepository;
 import com.zerobase.parkinglot.member.repository.MemberRepository;
-import com.zerobase.parkinglot.member.type.ErrorCode;
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.type.Role;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -36,16 +28,17 @@ public class MemberServiceImpl implements MemberService{
     private final CarRepository carRepository;
 
     @Override
-    public MemberDto registerMember(Request request) {
+    @Transactional
+    public MemberDto registerMember(String email, String name, String password, String phone) {
 
-        validateRegisterMember(request.getEmail());
+        validateRegisterMember(email);
 
         return MemberDto.fromEntity(
             memberRepository.save(Member.builder()
-            .email(request.getEmail())
-            .name(request.getName())
-            .password(encPassword(request.getPassword()))
-            .phone(request.getPhone())
+            .email(email)
+            .name(name)
+            .password(encPassword(password))
+            .phone(phone)
             .role(Role.USER.getDescription())
             .regDt(LocalDateTime.now())
             .build())
@@ -53,11 +46,11 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public MemberDto updateMember(Long id, MemberUpdate.Request request) {
+    public MemberDto updateMember(Long id, String name, String phone) {
 
         Member member = findMemberById(id);
-        member.setName(request.getName());
-        member.setPhone(request.getPhone());
+        member.setName(name);
+        member.setPhone(phone);
         member.setUpdateDt(LocalDateTime.now());
 
         return MemberDto.fromEntity(
@@ -66,13 +59,13 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public MemberDto resetPassword(Long id, MemberResetPassword.Request request) {
+    public MemberDto resetPassword(Long id, String password, String newPassword) {
 
         Member member = findMemberById(id);
 
-        checkPasswordEquals(request.getPassword(), member.getPassword());
+        checkPasswordEquals(password, member.getPassword());
 
-        member.setPassword(encPassword(request.getNewPassword()));
+        member.setPassword(encPassword(newPassword));
         member.setUpdateDt(LocalDateTime.now());
 
         return MemberDto.fromEntity(
@@ -81,29 +74,29 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public void deleteMember(Long id, MemberDelete.Request request) {
+    public void deleteMember(Long id, String password) {
 
         Member member = findMemberById(id);
 
         List<Car> carList = findCarByMember(member);
 
-        checkPasswordEquals(request.getPassword(), member.getPassword());
+        checkPasswordEquals(password, member.getPassword());
 
         carRepository.deleteAll(carList);
         memberRepository.delete(member);
     }
 
     @Override
-    public CarDto registerCar(Long id, CarRegister.Request request) {
+    public CarDto registerCar(Long id, String carNumber) {
 
         Member member = findMemberById(id);
 
-        validateRegisterCar(request.getCarNumber());
+        validateRegisterCar(carNumber);
 
         return CarDto.fromEntity(
             carRepository.save(Car.builder()
                 .member(member)
-                .carNumber(request.getCarNumber())
+                .carNumber(carNumber)
                 .regDt(LocalDateTime.now())
                 .build())
         );
@@ -112,22 +105,19 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public List<CarDto> getCars(Long id) {
 
-        Member member = findMemberById(id);
+        return CarDto.fromEntityList(findCarByMember(findMemberById(id)));
 
-        List<Car> carList = findCarByMember(member);
-
-        return CarDto.fromEntityList(carList);
     }
 
     @Override
-    public CarDto updateCar(Long id, CarUpdate.Request request) {
+    public CarDto updateCar(Long id, String carNumber, String newCarNumber) {
 
         Member member = findMemberById(id);
 
-        validateRegisterCar(request.getNewCarNumber());
+        validateRegisterCar(newCarNumber);
 
-        Car car = findCarByMemberAndCarNumber(member, request.getCarNumber());
-        car.setCarNumber(request.getNewCarNumber());
+        Car car = findCarByMemberAndCarNumber(member, carNumber);
+        car.setCarNumber(newCarNumber);
         car.setUpdateDt(LocalDateTime.now());
 
         return CarDto.fromEntity(
@@ -136,21 +126,21 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public void deleteCar(Long id, CarDelete.Request request) {
+    public void deleteCar(Long id, String carNumber) {
 
         Member member = findMemberById(id);
 
-        Car car = findCarByMemberAndCarNumber(member, request.getCarNumber());
+        Car car = findCarByMemberAndCarNumber(member, carNumber);
 
         carRepository.delete(car);
     }
 
     @Override
-    public String login(MemberLogin.Request request) {
+    public String login(String email, String password) {
 
-        Member member = findMemberByEmail(request.getEmail());
+        Member member = findMemberByEmail(email);
 
-        checkPasswordEquals(request.getPassword(), member.getPassword());
+        checkPasswordEquals(password, member.getPassword());
 
         return createToken(member);
     }

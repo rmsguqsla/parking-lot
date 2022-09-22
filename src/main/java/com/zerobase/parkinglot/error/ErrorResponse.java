@@ -1,6 +1,5 @@
 package com.zerobase.parkinglot.error;
 
-import com.zerobase.parkinglot.member.type.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

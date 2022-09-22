@@ -1,4 +1,4 @@
-package com.zerobase.parkinglot.member.exception;
+package com.zerobase.parkinglot.parkinglot.exception;
 
 import com.zerobase.parkinglot.error.ErrorCode;
 import lombok.AllArgsConstructor;
@@ -12,14 +12,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MemberException extends RuntimeException {
+public class ParkingLotException extends RuntimeException {
 
     private ErrorCode errorCode;
 
     private String errorMessage;
 
-    public MemberException(ErrorCode errorCode) {
+    public ParkingLotException(ErrorCode errorCode) {
         this.errorCode = errorCode;
         this.errorMessage = errorCode.getDescription();
     }
+
 }

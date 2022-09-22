@@ -19,7 +19,7 @@ public class CarInfo {
     private Long id;
     private String carNumber;
 
-    public static List<CarInfo> from(List<CarDto> carDtoList) {
+    public static List<CarInfo> listFrom(List<CarDto> carDtoList) {
 
         List<CarInfo> carInfoList = new ArrayList<>();
 

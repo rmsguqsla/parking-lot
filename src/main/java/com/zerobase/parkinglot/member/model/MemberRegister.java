@@ -16,6 +16,7 @@ public class MemberRegister {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    @Builder
     public static class Request {
         @Email(message = "이메일 형식으로 입력해 주세요.")
         @NotBlank(message = "이메일 입력은 필수 입니다.")

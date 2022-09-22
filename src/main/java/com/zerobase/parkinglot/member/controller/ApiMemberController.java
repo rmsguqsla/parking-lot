@@ -34,7 +34,11 @@ public class ApiMemberController {
         @RequestBody @Valid MemberRegister.Request request) {
 
         return MemberRegister.Response.from(
-            memberService.registerMember(request)
+            memberService.registerMember(
+                request.getEmail(),
+                request.getName(),
+                request.getPassword(),
+                request.getPhone())
         );
 
     }
@@ -46,7 +50,8 @@ public class ApiMemberController {
         @RequestBody @Valid MemberUpdate.Request request) {
 
         return MemberUpdate.Response.from(
-            memberService.updateMember(id, request)
+            memberService.updateMember(
+                id, request.getName(), request.getPhone())
         );
 
     }
@@ -58,7 +63,9 @@ public class ApiMemberController {
         @RequestBody @Valid MemberResetPassword.Request request) {
 
         return MemberResetPassword.Response.from(
-            memberService.resetPassword(id, request)
+            memberService.resetPassword(
+                id, request.getPassword(), request.getNewPassword()
+            )
         );
 
     }
@@ -69,7 +76,7 @@ public class ApiMemberController {
         @PathVariable Long id,
         @RequestBody @Valid MemberDelete.Request request) {
 
-        memberService.deleteMember(id, request);
+        memberService.deleteMember(id, request.getPassword());
 
         return MemberDelete.Response.delete();
     }
@@ -81,7 +88,7 @@ public class ApiMemberController {
         @RequestBody @Valid CarRegister.Request request) {
 
         return CarRegister.Response.from(
-            memberService.registerCar(id, request)
+            memberService.registerCar(id, request.getCarNumber())
         );
 
     }
@@ -91,7 +98,7 @@ public class ApiMemberController {
     public List<CarInfo> getCars(
         @PathVariable Long id) {
 
-        return CarInfo.from(memberService.getCars(id));
+        return CarInfo.listFrom(memberService.getCars(id));
 
     }
 
@@ -102,7 +109,8 @@ public class ApiMemberController {
         @RequestBody @Valid CarUpdate.Request request) {
 
         return CarUpdate.Response.from(
-            memberService.updateCar(id, request)
+            memberService.updateCar(id, request.getCarNumber(),
+                request.getNewCarNumber())
         );
 
     }
@@ -113,7 +121,7 @@ public class ApiMemberController {
         @PathVariable Long id,
         @RequestBody @Valid CarDelete.Request request) {
 
-        memberService.deleteCar(id, request);
+        memberService.deleteCar(id, request.getCarNumber());
 
         return CarDelete.Response.delete();
 
@@ -125,7 +133,7 @@ public class ApiMemberController {
         @RequestBody @Valid MemberLogin.Request request) {
 
         return MemberLogin.Response.token(
-            memberService.login(request)
+            memberService.login(request.getEmail(), request.getPassword())
         );
 
     }
