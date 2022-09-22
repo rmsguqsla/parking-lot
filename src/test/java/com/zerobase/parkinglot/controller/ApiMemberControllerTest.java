@@ -240,7 +240,7 @@ public class ApiMemberControllerTest {
 
 
         //then
-        mockMvc.perform(get("/api/member/1/car/list"))
+        mockMvc.perform(get("/api/member/1/cars"))
             .andDo(print())
             .andExpect(jsonPath("$[0].carNumber").value("12가1212"))
             .andExpect(jsonPath("$[1].carNumber").value("12가3434"))
@@ -259,7 +259,7 @@ public class ApiMemberControllerTest {
 
 
         //then
-        mockMvc.perform(get("/api/member/1/car/list"))
+        mockMvc.perform(get("/api/member/1/cars"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.errorCode").value("MEMBER_NOT_FOUND"))
             .andExpect(jsonPath("$.errorMessage").value("회원이 존재하지 않습니다."))
