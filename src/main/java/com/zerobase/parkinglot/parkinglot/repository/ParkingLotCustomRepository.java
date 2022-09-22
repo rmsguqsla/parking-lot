@@ -1,7 +1,9 @@
 package com.zerobase.parkinglot.parkinglot.repository;
 
 
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.parkinglot.entity.ParkingLot;
+import com.zerobase.parkinglot.parkinglot.exception.ParkingLotException;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotDto;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotUserInfo;
 import com.zerobase.parkinglot.parkinglot.type.SearchType;
@@ -37,6 +39,9 @@ public class ParkingLotCustomRepository {
 
     public List<ParkingLotUserInfo> findAllBySearch(double myLat, double myLng, String searchType, String searchValue) {
 
+        if (!InvalidSearchType(searchType)) {
+            return Collections.EMPTY_LIST;
+        }
 
         String query = "SELECT p.id, p.address, p.name, p.space_count, "
             + "(6371 * acos(cos(radians(p.lat))*cos(radians("+ myLat +"))"
@@ -57,5 +62,19 @@ public class ParkingLotCustomRepository {
 
         return list;
 
+    }
+
+    private boolean InvalidSearchType(String searchType) {
+
+        boolean exist = false;
+
+        for (SearchType type : SearchType.values()) {
+            if (type.getDescription().equals(searchType)) {
+                exist = true;
+                break;
+            }
+        }
+
+        return exist;
     }
 }

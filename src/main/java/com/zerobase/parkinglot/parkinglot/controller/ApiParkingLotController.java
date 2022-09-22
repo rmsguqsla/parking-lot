@@ -28,7 +28,7 @@ public class ApiParkingLotController {
     private final ParkingLotService parkingLotService;
 
     // 내 위치와 가장 가까운 거리의 20개 주차장 목록 API
-    @GetMapping("/api/parking-lots/my-around")
+    @GetMapping("/api/parking-lots/around")
     public List<ParkingLotUserInfo> getParkingLotsMyAround(@RequestParam double myLat, @RequestParam double myLng) {
 
         return parkingLotService.getParkingLotsMyAround(myLat, myLng);
@@ -47,9 +47,9 @@ public class ApiParkingLotController {
 
     // 주차장 상세 API
     @GetMapping("/api/parking-lot/{id}")
-    public ParkingLotUserInfoDetail getParkingLotDetail(@PathVariable Long id) {
+    public ParkingLotUserInfoDetail getParkingLotUser(@PathVariable Long id) {
 
-        ParkingLotDto parkingLotDto = parkingLotService.getParkingLot(id);
+        ParkingLotDto parkingLotDto = parkingLotService.getParkingLotWithUseYn(id);
         int reservedCount = 0;
         List<TicketUserInfo> ticketUserInfoList = parkingLotService.getUsableTickets(id);
 

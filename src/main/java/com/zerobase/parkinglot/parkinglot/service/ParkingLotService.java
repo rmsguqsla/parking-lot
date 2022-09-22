@@ -32,4 +32,6 @@ public interface ParkingLotService {
     TicketDto getTicket(Long parkingLotId, Long ticketId);
 
     List<TicketUserInfo> getUsableTickets(Long id);
+
+    ParkingLotDto getParkingLotWithUseYn(Long id);
 }

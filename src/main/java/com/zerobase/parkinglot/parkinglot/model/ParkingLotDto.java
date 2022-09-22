@@ -35,7 +35,6 @@ public class ParkingLotDto {
 
     private boolean useYn;
 
-    private double distance;
 
     public static ParkingLotDto fromEntity(ParkingLot parkingLot) {
         return ParkingLotDto.builder()

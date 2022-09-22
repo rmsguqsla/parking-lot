@@ -1,13 +1,19 @@
 package com.zerobase.parkinglot.utils;
 
+import com.zerobase.parkinglot.error.ErrorCode;
+import com.zerobase.parkinglot.parkinglot.exception.ParkingLotException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -44,11 +50,12 @@ public class GeoCodingUtil {
             JSONObject geometry = (JSONObject) results0.get("geometry");
             JSONObject location = (JSONObject) geometry.get("location");
 
-            System.out.println((double) location.get("lat")+" "+(double) location.get("lng"));
             return new double[]{(double) location.get("lat"), (double) location.get("lng")};
 
+        } catch (IndexOutOfBoundsException e) {
+            log.error(e.toString());
+            throw new ParkingLotException(ErrorCode.INVALID_ADDRESS);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

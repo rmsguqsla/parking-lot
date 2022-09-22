@@ -88,7 +88,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     @Override
     public ParkingLotDto getParkingLot(Long id) {
-        return ParkingLotDto.fromEntity(findParkingLotByIdAndUseYn(id));
+        return ParkingLotDto.fromEntity(findParkingLotById(id));
     }
 
     @Override
@@ -100,8 +100,6 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     public List<ParkingLotUserInfo> getParkingLotsSearch(
         double myLat, double myLng,
         String searchType, String searchValue) {
-
-        InvalidSearchType(searchType);
 
         return parkingLotCustomRepository.findAllBySearch(myLat, myLng, searchType, searchValue);
     }
@@ -173,6 +171,11 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Override
+    public ParkingLotDto getParkingLotWithUseYn(Long id) {
+        return ParkingLotDto.fromEntity(findParkingLotByIdAndUseYn(id));
+    }
+
     private List<TicketDto> getUsableTicketDtoList(Long id) {
 
         ParkingLot parkingLot = findParkingLotById(id);
@@ -229,22 +232,6 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         return ticketRepository.findByIdAndParkingLot(ticketId, parkingLot)
             .orElseThrow(() -> new ParkingLotException(ErrorCode.PARKING_LOT_TICKET_NOT_MATCH));
 
-    }
-
-    private void InvalidSearchType(String searchType) {
-
-        boolean exist = false;
-
-        for (SearchType type : SearchType.values()) {
-            if (type.getDescription().equals(searchType)) {
-                exist = true;
-                break;
-            }
-        }
-
-        if (!exist) {
-            throw new ParkingLotException(ErrorCode.SEARCH_TYPE_NOT_EXIST);
-        }
     }
 
     private ParkingLot findParkingLotById(Long id) {

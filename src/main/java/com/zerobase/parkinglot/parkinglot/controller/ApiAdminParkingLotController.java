@@ -8,7 +8,7 @@ import com.zerobase.parkinglot.parkinglot.model.TicketRegister;
 import com.zerobase.parkinglot.parkinglot.model.TicketUpdate;
 import com.zerobase.parkinglot.parkinglot.service.ParkingLotService;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotRegister.Response;
-import com.zerobase.parkinglot.utils.LocalTimeUtil;
+import java.time.LocalTime;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiAdminParkingLotController {
 
     private final ParkingLotService parkingLotService;
-    private final LocalTimeUtil localTimeUtil;
 
     // 주차장 등록 API
     @PostMapping("/api/admin/parking-lot")
@@ -83,12 +82,12 @@ public class ApiAdminParkingLotController {
         return TicketRegister.Response.from(
             parkingLotService.ticketRegister(
                 id, request.getName(), request.getFee(),
-                localTimeUtil.convertLocalTime(
+                convertLocalTime(
                     request.getStartHour(),
                     request.getStartMinute(),
                     request.getStartSecond()
                 ),
-                localTimeUtil.convertLocalTime(
+                convertLocalTime(
                     request.getEndHour(),
                     request.getEndMinute(),
                     request.getEndSecond()
@@ -122,12 +121,12 @@ public class ApiAdminParkingLotController {
         return TicketUpdate.Response.from(
             parkingLotService.ticketUpdate(
                 parkingLotId, ticketId, request.getName(), request.getFee(),
-                localTimeUtil.convertLocalTime(
+                convertLocalTime(
                     request.getStartHour(),
                     request.getStartMinute(),
                     request.getStartSecond()
                 ),
-                localTimeUtil.convertLocalTime(
+                convertLocalTime(
                     request.getEndHour(),
                     request.getEndMinute(),
                     request.getEndSecond()
@@ -137,5 +136,9 @@ public class ApiAdminParkingLotController {
             )
         );
 
+    }
+
+    private LocalTime convertLocalTime(int hour, int minute, int second) {
+        return LocalTime.of(hour, minute, second, 0);
     }
 }
