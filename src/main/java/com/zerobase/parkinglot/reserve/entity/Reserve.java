@@ -48,6 +48,8 @@ public class Reserve {
 
     private LocalDateTime reserveDt;
 
+    private LocalDateTime reserveEndDt;
+
     @Enumerated(value = EnumType.STRING)
     private StatusType status;
 

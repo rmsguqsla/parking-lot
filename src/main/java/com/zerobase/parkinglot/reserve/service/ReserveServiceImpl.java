@@ -43,11 +43,15 @@ public class ReserveServiceImpl implements ReserveService{
     public ReserveDto reserveRegister(Long memberId, Long carId, Long parkingLotId,
         Long ticketId, Integer estimatedHour, Integer estimatedMinute) {
 
+        ParkingLot parkingLot = findParkingLotByIdAndUseYn(parkingLotId);
+
+        // Using 상태의 예약 수를 파악
+        // if 예약 수 >= 주차장 자리 => 예약 x
+        checkReserveFull(parkingLot);
+
         Member member = findMemberById(memberId);
 
         Car car = findCarByIdAndMember(carId, member);
-
-        ParkingLot parkingLot = findParkingLotByIdAndUseYn(parkingLotId);
 
         Ticket ticket = findTicketByIdAndParkingLot(ticketId, parkingLot);
 
@@ -58,6 +62,11 @@ public class ReserveServiceImpl implements ReserveService{
         // 조건4. 최소 이용권 끝 사용 가능 시간 보다 1시간 전에 예약해야 함
         LocalDateTime minEstimatedDt = makeMinEstimatedDt(estimatedHour,
             estimatedMinute, ticketId, parkingLot);
+
+        // 예약종료시간은 최소도착예정시간 + 이용권 최대 이용 가능시간
+        // 최대 오늘을 넘길 수 없음
+        LocalDateTime reserveEndDt = getReserveEndDt(minEstimatedDt, ticket);
+
 
         return ReserveDto.fromEntity(
             reserveRepository.save(
@@ -73,9 +82,35 @@ public class ReserveServiceImpl implements ReserveService{
                     .minEstimatedDt(minEstimatedDt)
                     .maxEstimatedDt(minEstimatedDt.plusMinutes(30))
                     .reserveDt(LocalDateTime.now())
+                    .reserveEndDt(reserveEndDt)
                     .status(StatusType.Using)
                     .build()
             ));
+    }
+
+    private void checkReserveFull(ParkingLot parkingLot) {
+        int reserveCount = reserveRepository.countByParkingLotAndAddressAndStatus(parkingLot.getName(), parkingLot.getAddress(), StatusType.Using);
+        int spaceCount = parkingLot.getSpaceCount();
+        if (reserveCount >= spaceCount) {
+            throw new ReserveException(ErrorCode.RESERVE_FULL);
+        }
+    }
+
+    private LocalDateTime getReserveEndDt(LocalDateTime minEstimatedDt, Ticket ticket) {
+        // 예약종료시간은 예약시간 + 이용권 최대 이용 가능시간
+        // 최대 오늘을 넘길 수 없음
+        int hour = ticket.getMaxUsableTime().getHour();
+        int minute = ticket.getMaxUsableTime().getMinute();
+        int second = ticket.getMaxUsableTime().getSecond();
+
+        LocalDateTime reserveEndDt = minEstimatedDt.plusSeconds(second).plusMinutes(minute).plusHours(hour);
+
+        LocalDateTime todayMax = LocalDate.now().atTime(LocalTime.MAX);
+        if (reserveEndDt.isAfter(todayMax)) {
+            reserveEndDt = todayMax;
+        }
+
+        return reserveEndDt;
     }
 
     // 예약 취소
@@ -89,7 +124,7 @@ public class ReserveServiceImpl implements ReserveService{
 
         // 상태가 Using인지(Cancel, Complete이면 exception)
         checkStatusIsUsing(reserve);
-        
+
         // 최소도착예정시간 30분전엔 취소 x
         checkBefore30(reserve);
 
