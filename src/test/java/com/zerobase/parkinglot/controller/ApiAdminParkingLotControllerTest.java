@@ -234,7 +234,7 @@ public class ApiAdminParkingLotControllerTest {
             .name("서울주차장")
             .build();
 
-        given(parkingLotService.ticketRegister(anyLong(), anyString(), anyInt(), any(), any(), anyBoolean()))
+        given(parkingLotService.ticketRegister(anyLong(), anyString(), anyInt(), any(), any(), any(), anyBoolean()))
             .willReturn(
                 TicketDto.builder()
                     .id(1L)
@@ -257,6 +257,7 @@ public class ApiAdminParkingLotControllerTest {
                             "평일 이용권",
                             10000,
                             0, 0, 0,
+                            23, 59, 59,
                             23, 59, 59,
                             false
                         )
@@ -416,7 +417,7 @@ public class ApiAdminParkingLotControllerTest {
             .name("서울주차장")
             .build();
 
-        given(parkingLotService.ticketUpdate(anyLong(), anyLong(), anyString(), anyInt(), any(), any(), anyBoolean(), anyBoolean()))
+        given(parkingLotService.ticketUpdate(anyLong(), anyLong(), anyString(), anyInt(), any(), any(), any(), anyBoolean(), anyBoolean()))
             .willReturn(
                 TicketDto.builder()
                     .id(1L)
@@ -439,6 +440,7 @@ public class ApiAdminParkingLotControllerTest {
                             "평일 이용권",
                             10000,
                             0, 0, 0,
+                            23, 59, 59,
                             23, 59, 59,
                             false,
                             true

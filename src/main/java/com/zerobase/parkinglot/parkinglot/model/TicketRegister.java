@@ -31,6 +31,10 @@ public class TicketRegister {
         private int endMinute;
         private int endSecond;
 
+        private int maxHour;
+        private int maxMinute;
+        private int maxSecond;
+
         private boolean holidayYn;
     }
 
@@ -45,6 +49,7 @@ public class TicketRegister {
         private int fee;
         private LocalTime startUsableTime;
         private LocalTime endUsableTime;
+        private LocalTime maxUsableTime;
 
         public static Response from(TicketDto ticketDto) {
             return Response.builder()
@@ -53,6 +58,7 @@ public class TicketRegister {
                 .fee(ticketDto.getFee())
                 .startUsableTime(ticketDto.getStartUsableTime())
                 .endUsableTime(ticketDto.getEndUsableTime())
+                .maxUsableTime(ticketDto.getMaxUsableTime())
                 .build();
         }
     }

@@ -106,7 +106,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     @Override
     public TicketDto ticketRegister(Long id, String name, int fee,
-        LocalTime startUsableTime, LocalTime endUsableTime, boolean holidayYn) {
+        LocalTime startUsableTime, LocalTime endUsableTime, LocalTime maxUsableTime, boolean holidayYn) {
 
         ParkingLot parkingLot = findParkingLotById(id);
 
@@ -118,6 +118,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
                     .fee(fee)
                     .startUsableTime(startUsableTime)
                     .endUsableTime(endUsableTime)
+                    .maxUsableTime(maxUsableTime)
                     .holidayYn(holidayYn)
                     .useYn(true)
                     .regDt(LocalDateTime.now())
@@ -129,7 +130,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     @Override
     public TicketDto ticketUpdate(Long parkingLotId, Long ticketId, String name, int fee,
-        LocalTime startUsableTime, LocalTime endUsableTime, boolean holidayYn, boolean useYn) {
+        LocalTime startUsableTime, LocalTime endUsableTime, LocalTime maxUsableTime, boolean holidayYn, boolean useYn) {
 
         ParkingLot parkingLot = findParkingLotById(parkingLotId);
 

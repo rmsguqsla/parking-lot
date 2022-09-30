@@ -27,6 +27,9 @@ public class TicketUpdate {
         private int endHour;
         private int endMinute;
         private int endSecond;
+        private int maxHour;
+        private int maxMinute;
+        private int maxSecond;
         private boolean holidayYn;
         private boolean useYn;
     }

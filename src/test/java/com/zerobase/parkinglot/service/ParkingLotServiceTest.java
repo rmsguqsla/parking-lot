@@ -443,6 +443,7 @@ public class ParkingLotServiceTest {
         // when
         TicketDto ticketDto = parkingLotServiceImpl.ticketRegister(1L, "평일 이용권", 10000,
             LocalTime.of(0,0,0),
+            LocalTime.of(23,59,59),
             LocalTime.of(23,59,59), false);
 
         ArgumentCaptor<Ticket> captor = ArgumentCaptor.forClass(Ticket.class);
@@ -471,7 +472,8 @@ public class ParkingLotServiceTest {
         ParkingLotException exception = assertThrows(ParkingLotException.class,
             () -> parkingLotServiceImpl.ticketRegister(1L, "평일 이용권", 10000,
                 LocalTime.of(0,0,0),
-                LocalTime.of(23,59,59), false));
+                LocalTime.of(23,59,59),
+                LocalTime.of(23,59,59),false));
 
         //then
         assertEquals(ErrorCode.PARKING_LOT_NOT_FOUND, exception.getErrorCode());
@@ -517,6 +519,7 @@ public class ParkingLotServiceTest {
             1L, 1L, "평일 이용권", 10000,
             LocalTime.of(0,0,0),
             LocalTime.of(23,59,59),
+            LocalTime.of(23,59,59),
             false, true
             );
 
@@ -546,6 +549,7 @@ public class ParkingLotServiceTest {
         ParkingLotException exception = assertThrows(ParkingLotException.class,
             () -> parkingLotServiceImpl.ticketUpdate(1L, 1L, "평일 이용권", 10000,
                 LocalTime.of(0,0,0),
+                LocalTime.of(23,59,59),
                 LocalTime.of(23,59,59),
                 false, true));
 
@@ -578,6 +582,7 @@ public class ParkingLotServiceTest {
         ParkingLotException exception = assertThrows(ParkingLotException.class,
             () -> parkingLotServiceImpl.ticketUpdate(1L, 1L, "평일 이용권", 10000,
                 LocalTime.of(0,0,0),
+                LocalTime.of(23,59,59),
                 LocalTime.of(23,59,59),
                 false, true));
 

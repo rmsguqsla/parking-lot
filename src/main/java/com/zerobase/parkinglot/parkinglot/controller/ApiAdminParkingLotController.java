@@ -92,6 +92,11 @@ public class ApiAdminParkingLotController {
                     request.getEndMinute(),
                     request.getEndSecond()
                 ),
+                convertLocalTime(
+                    request.getMaxHour(),
+                    request.getMaxMinute(),
+                    request.getMaxSecond()
+                ),
                 request.isHolidayYn()
             )
         );
@@ -130,6 +135,11 @@ public class ApiAdminParkingLotController {
                     request.getEndHour(),
                     request.getEndMinute(),
                     request.getEndSecond()
+                ),
+                convertLocalTime(
+                    request.getMaxHour(),
+                    request.getMaxMinute(),
+                    request.getMaxSecond()
                 ),
                 request.isHolidayYn(),
                 request.isUseYn()
