@@ -89,6 +89,9 @@ public class ReserveServiceImpl implements ReserveService{
 
         // 상태가 Using인지(Cancel, Complete이면 exception)
         checkStatusIsUsing(reserve);
+        
+        // 최소도착예정시간 30분전엔 취소 x
+        checkBefore30(reserve);
 
         reserve.setStatus(StatusType.Cancel);
         reserve.setCancelDt(LocalDateTime.now());
@@ -96,6 +99,11 @@ public class ReserveServiceImpl implements ReserveService{
         return ReserveDto.fromEntity(reserveRepository.save(reserve));
     }
 
+    private void checkBefore30(Reserve reserve) {
+        if (reserve.getMinEstimatedDt().minusMinutes(30).isBefore(LocalDateTime.now())) {
+            throw new ReserveException(ErrorCode.NOT_CANCEL_RESERVE);
+        }
+    }
 
 
     private void checkStatusIsUsing(Reserve reserve) {

@@ -18,7 +18,8 @@ public enum ErrorCode {
     INVALID_RANGE_HOUR_MINUTE("시간은 0~23시, 분은 0~59분 입니다."),
     RESERVE_NOT_FOUND("주차장 예약 내역이 존재하지 않습니다."),
     STATUS_CANCEL("이미 취소되었습니다."),
-    STATUS_COMPLETE("이미 사용하셨습니다.");
+    STATUS_COMPLETE("이미 사용하셨습니다."),
+    NOT_CANCEL_RESERVE("예약 취소할 수 없습니다.");
 
     private final String description;
 }
