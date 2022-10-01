@@ -1,10 +1,12 @@
 package com.zerobase.parkinglot.reserve.controller;
 
 import com.zerobase.parkinglot.reserve.model.ReserveCancel;
+import com.zerobase.parkinglot.reserve.model.ReserveInfo;
 import com.zerobase.parkinglot.reserve.model.ReserveRegister;
 import com.zerobase.parkinglot.reserve.service.ReserveService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,5 +36,16 @@ public class ApiReserveController {
         return ReserveCancel.Response.from(reserveService.reserveCancel(memberId, request.getReserveId()));
     }
 
+    // 사용자 예약 목록
+    @GetMapping("/api/member/{id}/reserves")
+    public List<ReserveInfo> getReserves(@PathVariable Long id) {
+        return reserveService.getReserves(id);
+    }
+
+    // 사용자 예약 상세
+    @GetMapping("/api/member/{memberId}/reserve/{reserveId}")
+    public ReserveInfo getReserve(@PathVariable(value = "memberId") Long memberId, @PathVariable(value = "reserveId") Long reserveId) {
+        return reserveService.getReserve(memberId, reserveId);
+    }
 
 }

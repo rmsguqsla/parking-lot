@@ -14,13 +14,13 @@ import com.zerobase.parkinglot.parkinglot.repository.TicketRepository;
 import com.zerobase.parkinglot.reserve.entity.Reserve;
 import com.zerobase.parkinglot.reserve.exception.ReserveException;
 import com.zerobase.parkinglot.reserve.model.ReserveDto;
-import com.zerobase.parkinglot.reserve.model.ReserveRegister;
-import com.zerobase.parkinglot.reserve.model.ReserveRegister.Response;
+import com.zerobase.parkinglot.reserve.model.ReserveInfo;
 import com.zerobase.parkinglot.reserve.repository.ReserveRepository;
 import com.zerobase.parkinglot.reserve.type.StatusType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,6 +132,38 @@ public class ReserveServiceImpl implements ReserveService{
         reserve.setCancelDt(LocalDateTime.now());
 
         return ReserveDto.fromEntity(reserveRepository.save(reserve));
+    }
+
+    @Override
+    public List<ReserveInfo> getReserves(Long id) {
+        Member member = findMemberById(id);
+        List<Reserve> reserveList = findReserveByEmail(member.getEmail());
+        return ReserveInfo.fromEntityList(reserveList);
+    }
+
+    @Override
+    public List<ReserveInfo> getAdminReserves() {
+        return ReserveInfo.fromEntityList(reserveRepository.findAll());
+    }
+
+    @Override
+    public ReserveInfo getReserve(Long memberId, Long reserveId) {
+        Member member = findMemberById(memberId);
+        return ReserveInfo.fromEntity(findReserveByIdAndEmail(reserveId, member.getEmail()));
+    }
+
+    @Override
+    public ReserveInfo getAdminReserve(Long id) {
+        return ReserveInfo.fromEntity(findReserveById(id));
+    }
+
+    private Reserve findReserveById(Long id) {
+        return reserveRepository.findById(id)
+            .orElseThrow(() -> new ReserveException(ErrorCode.RESERVE_NOT_FOUND));
+    }
+
+    private List<Reserve> findReserveByEmail(String email) {
+        return reserveRepository.findByEmail(email);
     }
 
     private void checkBefore30(Reserve reserve) {
