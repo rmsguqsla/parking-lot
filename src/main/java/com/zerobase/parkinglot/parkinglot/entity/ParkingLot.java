@@ -50,8 +50,8 @@ public class ParkingLot {
         reserveCount += 1;
     }
 
-    public void minusReserveCount(Long amount) {
-        if (amount <= 0) {
+    public void minusReserveCount() {
+        if (reserveCount <= 0) {
             throw new ReserveException(ErrorCode.NOT_CANCEL_RESERVE);
         }
         reserveCount -= 1;

@@ -37,7 +37,7 @@ public class ReserveCancel {
         private Integer fee;
 
         @Enumerated(value = EnumType.STRING)
-        private StatusType statusType;
+        private StatusType status;
 
         private LocalDateTime cancelDt;
 
@@ -47,7 +47,7 @@ public class ReserveCancel {
                 .address(reserveDto.getAddress())
                 .ticket(reserveDto.getTicket())
                 .fee(reserveDto.getFee())
-                .statusType(reserveDto.getStatus())
+                .status(reserveDto.getStatus())
                 .cancelDt(reserveDto.getCancelDt())
                 .build();
         }

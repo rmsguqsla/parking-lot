@@ -21,7 +21,9 @@ public enum ErrorCode {
     STATUS_COMPLETE("이미 사용하셨습니다."),
     NOT_CANCEL_RESERVE("예약 취소할 수 없습니다."),
     RESERVE_FULL("예약이 다 찼습니다."),
-    RESERVE_TRANSACTION_LOCK("다른 사용자가 예약 중 입니다.");
+    RESERVE_TRANSACTION_LOCK("다른 사용자가 예약 중 입니다."),
+    TIME_IN_THE_PAST("현재시간보다 과거시간입니다."),
+    RESERVE_ONE_HOUR_EARLIER("이용권 끝 유효시간보다 최소 1시간 일찍 예약하셔야합니다.");
 
     private final String description;
 }

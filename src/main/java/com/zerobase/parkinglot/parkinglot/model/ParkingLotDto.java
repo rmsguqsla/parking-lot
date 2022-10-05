@@ -29,6 +29,8 @@ public class ParkingLotDto {
 
     private int spaceCount;
 
+    private int reserveCount;
+
     private LocalDateTime regDt;
 
     private LocalDateTime updateDt;
@@ -44,6 +46,7 @@ public class ParkingLotDto {
             .lat(parkingLot.getLat())
             .lng(parkingLot.getLng())
             .spaceCount(parkingLot.getSpaceCount())
+            .reserveCount(parkingLot.getReserveCount())
             .regDt(parkingLot.getRegDt())
             .updateDt(parkingLot.getUpdateDt())
             .useYn(parkingLot.isUseYn())

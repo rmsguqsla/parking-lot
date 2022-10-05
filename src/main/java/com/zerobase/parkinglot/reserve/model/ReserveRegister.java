@@ -49,6 +49,8 @@ public class ReserveRegister {
 
         private LocalDateTime reserveDt;
 
+        private LocalDateTime reserveEndDt;
+
         public static ReserveRegister.Response from(ReserveDto reserveDto) {
             return Response.builder()
                 .name(reserveDto.getName())
@@ -59,6 +61,7 @@ public class ReserveRegister {
                 .minEstimatedDt(reserveDto.getMinEstimatedDt())
                 .maxEstimatedDt(reserveDto.getMaxEstimatedDt())
                 .reserveDt(reserveDto.getReserveDt())
+                .reserveEndDt(reserveDto.getReserveEndDt())
                 .build();
         }
     }

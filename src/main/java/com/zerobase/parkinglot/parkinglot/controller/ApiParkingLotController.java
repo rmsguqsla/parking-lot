@@ -50,10 +50,10 @@ public class ApiParkingLotController {
     public ParkingLotUserInfoDetail getParkingLotUser(@PathVariable Long id) {
 
         ParkingLotDto parkingLotDto = parkingLotService.getParkingLotWithUseYn(id);
-        int reservedCount = 0;
+
         List<TicketUserInfo> ticketUserInfoList = parkingLotService.getUsableTickets(id);
 
-        return ParkingLotUserInfoDetail.from(parkingLotDto, reservedCount, ticketUserInfoList);
+        return ParkingLotUserInfoDetail.from(parkingLotDto, ticketUserInfoList);
     }
 
 }
