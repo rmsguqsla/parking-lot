@@ -11,5 +11,9 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
 geocoding:
   key: AIzaSyB5J_0k9aKuHEIjTJR7fYwoPx0kSU09lNQ

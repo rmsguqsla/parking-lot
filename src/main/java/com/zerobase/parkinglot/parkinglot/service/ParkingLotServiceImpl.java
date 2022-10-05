@@ -11,7 +11,6 @@ import com.zerobase.parkinglot.parkinglot.model.TicketUserInfo;
 import com.zerobase.parkinglot.parkinglot.repository.ParkingLotCustomRepository;
 import com.zerobase.parkinglot.parkinglot.repository.ParkingLotRepository;
 import com.zerobase.parkinglot.parkinglot.repository.TicketRepository;
-import com.zerobase.parkinglot.parkinglot.type.SearchType;
 import com.zerobase.parkinglot.utils.GeoCodingUtil;
 import com.zerobase.parkinglot.utils.HolidayUtil;
 import java.time.LocalDateTime;
@@ -20,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,8 @@ public class ParkingLotServiceImpl implements ParkingLotService{
     private final ParkingLotCustomRepository parkingLotCustomRepository;
     private final TicketRepository ticketRepository;
     private final GeoCodingUtil geoCodingUtil;
+
+    @Transactional
     @Override
     public ParkingLotDto parkingLotRegister(String name, String address, int spaceCount) {
 
@@ -53,6 +55,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public List<ParkingLotDto> getParkingLots() {
 
@@ -62,6 +65,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public ParkingLotDto parkingLotUpdate(Long id, String name,
         String address, int spaceCount, boolean useYn) {
@@ -86,16 +90,19 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public ParkingLotDto getParkingLot(Long id) {
         return ParkingLotDto.fromEntity(findParkingLotById(id));
     }
 
+    @Transactional
     @Override
     public List<ParkingLotUserInfo> getParkingLotsMyAround(double myLat, double myLng) {
         return parkingLotCustomRepository.findAllByDistanceLimit20(myLat, myLng);
     }
 
+    @Transactional
     @Override
     public List<ParkingLotUserInfo> getParkingLotsSearch(
         double myLat, double myLng,
@@ -104,6 +111,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         return parkingLotCustomRepository.findAllBySearch(myLat, myLng, searchType, searchValue);
     }
 
+    @Transactional
     @Override
     public TicketDto ticketRegister(Long id, String name, int fee,
         LocalTime startUsableTime, LocalTime endUsableTime, LocalTime maxUsableTime, boolean holidayYn) {
@@ -128,6 +136,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public TicketDto ticketUpdate(Long parkingLotId, Long ticketId, String name, int fee,
         LocalTime startUsableTime, LocalTime endUsableTime, LocalTime maxUsableTime, boolean holidayYn, boolean useYn) {
@@ -147,6 +156,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         return TicketDto.fromEntity(ticketRepository.save(ticket));
     }
 
+    @Transactional
     @Override
     public List<TicketDto> getTickets(Long id) {
 
@@ -156,6 +166,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public TicketDto getTicket(Long parkingLotId, Long ticketId) {
 
@@ -165,6 +176,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public List<TicketUserInfo> getUsableTickets(Long id) {
 
@@ -172,6 +184,7 @@ public class ParkingLotServiceImpl implements ParkingLotService{
 
     }
 
+    @Transactional
     @Override
     public ParkingLotDto getParkingLotWithUseYn(Long id) {
         return ParkingLotDto.fromEntity(findParkingLotByIdAndUseYn(id));

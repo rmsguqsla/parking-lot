@@ -1,5 +1,6 @@
 package com.zerobase.parkinglot.reserve.model;
 
+import com.zerobase.parkinglot.aop.ParkingLotIdInterface;
 import com.zerobase.parkinglot.reserve.type.StatusType;
 import java.time.LocalDateTime;
 import javax.persistence.EnumType;
@@ -16,9 +17,9 @@ public class ReserveCancel {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Builder
-    public static class Request {
+    public static class Request implements ParkingLotIdInterface {
         private Long reserveId;
+        private Long parkingLotId;
     }
 
     @Getter

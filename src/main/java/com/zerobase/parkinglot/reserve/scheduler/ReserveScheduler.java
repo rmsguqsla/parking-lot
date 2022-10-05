@@ -5,6 +5,7 @@ import com.zerobase.parkinglot.reserve.repository.ReserveRepository;
 import com.zerobase.parkinglot.reserve.type.StatusType;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class ReserveScheduler {
     private final ReserveRepository reserveRepository;
 
     // 예약 종료 시간이 지나면 Using상태를 Complete으로 바꿈
+    @Transactional
     @Scheduled(fixedDelay = 1000)
     public void reserveCompleteScheduling() {
 

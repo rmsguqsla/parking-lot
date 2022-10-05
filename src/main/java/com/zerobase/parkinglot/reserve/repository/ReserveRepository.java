@@ -10,8 +10,6 @@ public interface ReserveRepository extends JpaRepository<Reserve, Long> {
 
     Optional<Reserve> findByIdAndEmail(Long reserveId, String email);
 
-    int countByParkingLotAndAddressAndStatus(String name, String address, StatusType using);
-
     List<Reserve> findByStatus(StatusType using);
 
     List<Reserve> findByEmail(String email);
