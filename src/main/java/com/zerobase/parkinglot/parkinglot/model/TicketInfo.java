@@ -31,6 +31,8 @@ public class TicketInfo {
 
     private LocalTime endUsableTime;
 
+    private LocalTime maxUsableTime;
+
     private boolean holidayYn;
 
     private boolean useYn;
@@ -60,6 +62,7 @@ public class TicketInfo {
             .fee(dto.getFee())
             .startUsableTime(dto.getStartUsableTime())
             .endUsableTime(dto.getEndUsableTime())
+            .maxUsableTime(dto.getMaxUsableTime())
             .holidayYn(dto.isHolidayYn())
             .useYn(dto.isUseYn())
             .regDt(dto.getRegDt())

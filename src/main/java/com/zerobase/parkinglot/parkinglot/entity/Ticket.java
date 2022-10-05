@@ -38,6 +38,8 @@ public class Ticket {
 
     private LocalTime endUsableTime;
 
+    private LocalTime maxUsableTime;
+
     private boolean holidayYn;
 
     private boolean useYn;

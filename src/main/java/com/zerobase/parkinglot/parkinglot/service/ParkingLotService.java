@@ -22,10 +22,10 @@ public interface ParkingLotService {
 
     List<ParkingLotUserInfo> getParkingLotsSearch(double myLat, double myLng, String searchType, String searchValue);
 
-    TicketDto ticketRegister(Long id, String name, int fee, LocalTime startUsableTime, LocalTime endUsableTime, boolean holidayYn);
+    TicketDto ticketRegister(Long id, String name, int fee, LocalTime startUsableTime, LocalTime endUsableTime, LocalTime maxUsableTime, boolean holidayYn);
 
     TicketDto ticketUpdate(Long parkingLotId, Long ticketId, String name, int fee,
-        LocalTime startUsableTime, LocalTime endUsableTime, boolean holidayYn, boolean useYn);
+        LocalTime startUsableTime, LocalTime endUsableTime, LocalTime maxUsableTime, boolean holidayYn, boolean useYn);
 
     List<TicketDto> getTickets(Long id);
 
