@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    int countByEmail(String email);
+    boolean existsByEmail(String email);
 
     Optional<Member> findByIdAndPassword(Long id, String password);
 

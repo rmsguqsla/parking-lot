@@ -16,6 +16,7 @@ import com.zerobase.parkinglot.utils.HolidayUtil;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -205,12 +206,14 @@ public class ParkingLotServiceImpl implements ParkingLotService{
         List<Ticket> ticketList = ticketRepository.findByParkingLotAndHolidayYnAndUseYn(parkingLot, isHoliday, true);
 
         // 현재 시간이 티켓의 이용가능시간 사이에 있는지
-        for (int i = ticketList.size() - 1; i >= 0; i--) {
+        List<Ticket> removeList = new ArrayList<>();
+        for (int i = 0; i < ticketList.size(); i++) {
             Ticket ticket = ticketList.get(i);
             if (!isUsableNow(ticket.getStartUsableTime(), ticket.getEndUsableTime())) {
-                ticketList.remove(ticket);
+                removeList.add(ticket);
             }
         }
+        ticketList.removeAll(removeList);
 
         return TicketDto.fromEntityList(ticketList);
     }

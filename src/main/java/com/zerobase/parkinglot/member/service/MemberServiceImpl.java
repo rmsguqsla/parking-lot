@@ -1,7 +1,6 @@
 package com.zerobase.parkinglot.member.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.entity.Car;
 import com.zerobase.parkinglot.member.entity.Member;
 import com.zerobase.parkinglot.member.exception.MemberException;
@@ -9,27 +8,32 @@ import com.zerobase.parkinglot.member.model.CarDto;
 import com.zerobase.parkinglot.member.model.MemberDto;
 import com.zerobase.parkinglot.member.repository.CarRepository;
 import com.zerobase.parkinglot.member.repository.MemberRepository;
-import com.zerobase.parkinglot.error.ErrorCode;
-import com.zerobase.parkinglot.member.type.Role;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
+    private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final CarRepository carRepository;
 
     @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return findMemberByEmail(email);
+    }
+
+    @Override
     @Transactional
-    public MemberDto registerMember(String email, String name, String password, String phone) {
+    public MemberDto registerMember(String email, String name, String password, String phone, String role) {
 
         validateRegisterMember(email);
 
@@ -37,12 +41,21 @@ public class MemberServiceImpl implements MemberService{
             memberRepository.save(Member.builder()
             .email(email)
             .name(name)
-            .password(encPassword(password))
+            .password(passwordEncoder.encode(password))
             .phone(phone)
-            .role(Role.USER.getDescription())
+            .role(role)
             .regDt(LocalDateTime.now())
             .build())
         );
+    }
+
+    @Override
+    public Member authenticate(String email, String password) {
+        Member member = findMemberByEmail(email);
+
+        checkPasswordEquals(password, member.getPassword());
+
+        return member;
     }
 
     @Override
@@ -65,7 +78,7 @@ public class MemberServiceImpl implements MemberService{
 
         checkPasswordEquals(password, member.getPassword());
 
-        member.setPassword(encPassword(newPassword));
+//        member.setPassword(encPassword(newPassword));
         member.setUpdateDt(LocalDateTime.now());
 
         return MemberDto.fromEntity(
@@ -135,31 +148,8 @@ public class MemberServiceImpl implements MemberService{
         carRepository.delete(car);
     }
 
-    @Override
-    public String login(String email, String password) {
 
-        Member member = findMemberByEmail(email);
 
-        checkPasswordEquals(password, member.getPassword());
-
-        return createToken(member);
-    }
-
-    private String createToken(Member member) {
-
-        LocalDateTime expiredDateTime = LocalDateTime.now().plusMonths(1);
-        Date expiredDate = Timestamp.valueOf(expiredDateTime);
-
-        // 토큰발행시점
-        String token = JWT.create()
-            .withExpiresAt(expiredDate)
-            .withClaim("user_id", member.getId())
-            .withSubject(member.getName())
-            .withIssuer(member.getEmail())
-            .sign(Algorithm.HMAC512("parkinglot".getBytes()));
-
-        return token;
-    }
 
     private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
@@ -180,11 +170,9 @@ public class MemberServiceImpl implements MemberService{
 
     }
 
-    private void checkPasswordEquals(String plaintext, String hashed) {
-
-        if (!passwordEquals(plaintext, hashed)) {
+    private void checkPasswordEquals(String password, String encPassword) {
+        if (!passwordEncoder.matches(password, encPassword)) {
             throw new MemberException(ErrorCode.PASSWORD_NOT_MATCH);
-
         }
     }
 
@@ -214,12 +202,9 @@ public class MemberServiceImpl implements MemberService{
     }
 
     private void validateRegisterMember(String email) {
-        if (memberRepository.countByEmail(email) > 0) {
+        if (memberRepository.existsByEmail(email)) {
             throw new MemberException(ErrorCode.MEMBER_ALREADY_EXIST);
         }
     }
 
-    private String encPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
-    }
 }

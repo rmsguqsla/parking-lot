@@ -1,6 +1,7 @@
 package com.zerobase.parkinglot.member.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -32,6 +33,9 @@ public class MemberRegister {
         @Size(min = 12, message = "전화변호는 12자 이상 입력해야 합니다.")
         @NotBlank(message = "전화번호 입력은 필수 입니다.")
         private String phone;
+
+        @NotBlank
+        String role;
     }
 
     @Getter

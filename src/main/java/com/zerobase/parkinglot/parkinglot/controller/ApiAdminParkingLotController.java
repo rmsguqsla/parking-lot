@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ public class ApiAdminParkingLotController {
     private final ParkingLotService parkingLotService;
 
     // 주차장 등록 API
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/admin/parking-lot")
     public Response parkingLotRegister(
         @RequestBody @Valid ParkingLotRegister.Request request) {
@@ -40,6 +42,7 @@ public class ApiAdminParkingLotController {
     }
 
     // 주차장 목록 API
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/admin/parking-lots")
     public List<ParkingLotInfo> getParkingLots() {
 
@@ -48,6 +51,7 @@ public class ApiAdminParkingLotController {
     }
 
     // 주차장 상세 API
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/admin/parking-lot/{id}")
     public ParkingLotInfo getParkingLot(@PathVariable Long id) {
 
@@ -56,6 +60,7 @@ public class ApiAdminParkingLotController {
     }
 
     // 주차장 수정(삭제) API
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/admin/parking-lot/{id}")
     public ParkingLotUpdate.Response parkingLotUpdate(
         @PathVariable Long id,
@@ -74,6 +79,7 @@ public class ApiAdminParkingLotController {
     }
 
     // 이용권 등록 API
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/api/admin/parking-lot/{id}/ticket")
     public TicketRegister.Response ticketRegister(
         @PathVariable Long id,
@@ -103,12 +109,14 @@ public class ApiAdminParkingLotController {
     }
 
     // 이용권 목록 API
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/admin/parking-lot/{id}/tickets")
     public List<TicketInfo> getTickets (@PathVariable Long id) {
         return TicketInfo.listFrom(parkingLotService.getTickets(id));
     }
 
     // 이용권 상세 API
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/admin/parking-lot/{parkingLotId}/ticket/{ticketId}")
     public TicketInfo getTicket (@PathVariable Long parkingLotId,
         @PathVariable Long ticketId) {
@@ -116,6 +124,7 @@ public class ApiAdminParkingLotController {
     }
 
     // 이용권 수정(식제) API
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/admin/parking-lot/{parkingLotId}/ticket/{ticketId}")
     public TicketUpdate.Response ticketUpdate (
         @PathVariable(value = "parkingLotId") Long parkingLotId,

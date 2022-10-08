@@ -1,21 +1,15 @@
 package com.zerobase.parkinglot.member.service;
 
-import com.zerobase.parkinglot.member.model.CarDelete;
+import com.zerobase.parkinglot.member.entity.Member;
 import com.zerobase.parkinglot.member.model.CarDto;
-import com.zerobase.parkinglot.member.model.CarRegister.Request;
-import com.zerobase.parkinglot.member.model.CarUpdate;
-import com.zerobase.parkinglot.member.model.MemberDelete;
 import com.zerobase.parkinglot.member.model.MemberDto;
-import com.zerobase.parkinglot.member.model.MemberLogin;
-import com.zerobase.parkinglot.member.model.MemberRegister;
-import com.zerobase.parkinglot.member.model.MemberResetPassword;
-import com.zerobase.parkinglot.member.model.MemberUpdate;
 import java.util.List;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface MemberService {
+public interface MemberService extends UserDetailsService {
 
     // 회원가입
-    MemberDto registerMember(String email, String name, String password, String phone);
+    MemberDto registerMember(String email, String name, String password, String phone, String role);
 
     // 차번호 등록
     CarDto registerCar(Long id, String carNumber);
@@ -36,7 +30,7 @@ public interface MemberService {
     CarDto updateCar(Long id, String carNumber, String newCarNumber);
 
     // 로그인 토큰 생성
-    String login(String email, String password);
+    Member authenticate(String email, String password);
 
     List<CarDto> getCars(Long id);
 }

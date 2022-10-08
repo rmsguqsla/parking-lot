@@ -2,6 +2,7 @@ package com.zerobase.parkinglot.member.model;
 
 import com.zerobase.parkinglot.member.entity.Member;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

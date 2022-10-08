@@ -10,9 +10,11 @@ import com.zerobase.parkinglot.parkinglot.model.ParkingLotUserInfoDetail;
 import com.zerobase.parkinglot.parkinglot.model.TicketInfo;
 import com.zerobase.parkinglot.parkinglot.model.TicketUserInfo;
 import com.zerobase.parkinglot.parkinglot.service.ParkingLotService;
+import com.zerobase.parkinglot.security.TokenProvider;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +29,10 @@ public class ApiParkingLotController {
 
     private final ParkingLotService parkingLotService;
 
+    private final TokenProvider tokenProvider;
+
     // 내 위치와 가장 가까운 거리의 20개 주차장 목록 API
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/parking-lots/around")
     public List<ParkingLotUserInfo> getParkingLotsMyAround(@RequestParam double myLat, @RequestParam double myLng) {
 
@@ -36,6 +41,7 @@ public class ApiParkingLotController {
     }
 
     // 주차장명 또는 주소로 검색한 주차장 목록 API
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/parking-lots/search")
     public List<ParkingLotUserInfo> getParkingLotsSearch(
         @RequestParam double myLat, @RequestParam double myLng,
@@ -46,6 +52,7 @@ public class ApiParkingLotController {
     }
 
     // 주차장 상세 API
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/parking-lot/{id}")
     public ParkingLotUserInfoDetail getParkingLotUser(@PathVariable Long id) {
 

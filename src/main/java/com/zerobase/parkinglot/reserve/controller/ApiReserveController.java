@@ -8,6 +8,7 @@ import com.zerobase.parkinglot.reserve.service.ReserveService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ public class ApiReserveController {
     private final ReserveService reserveService;
 
     // 예약
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/api/member/{id}/reserve")
     @ReserveLock
     public ReserveRegister.Response reserveRegister(@PathVariable(value = "id") Long memberId, @Valid @RequestBody ReserveRegister.Request request) {
@@ -34,6 +36,7 @@ public class ApiReserveController {
     }
 
     // 예약 취소
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/api/member/{id}/reserve")
     @ReserveLock
     public ReserveCancel.Response reserveCancel(@PathVariable(value = "id") Long memberId, @Valid @RequestBody ReserveCancel.Request request) {
@@ -41,12 +44,14 @@ public class ApiReserveController {
     }
 
     // 사용자 예약 목록
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/member/{id}/reserves")
     public List<ReserveInfo> getReserves(@PathVariable Long id) {
         return reserveService.getReserves(id);
     }
 
     // 사용자 예약 상세
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/member/{memberId}/reserve/{reserveId}")
     public ReserveInfo getReserve(@PathVariable(value = "memberId") Long memberId, @PathVariable(value = "reserveId") Long reserveId) {
         return reserveService.getReserve(memberId, reserveId);
