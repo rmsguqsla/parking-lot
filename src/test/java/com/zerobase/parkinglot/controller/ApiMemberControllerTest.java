@@ -1,6 +1,5 @@
 package com.zerobase.parkinglot.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -13,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.parkinglot.auth.WithAuthUser;
+import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.controller.ApiMemberController;
 import com.zerobase.parkinglot.member.entity.Member;
 import com.zerobase.parkinglot.member.exception.MemberException;
@@ -22,12 +23,12 @@ import com.zerobase.parkinglot.member.model.CarRegister;
 import com.zerobase.parkinglot.member.model.CarUpdate;
 import com.zerobase.parkinglot.member.model.MemberDelete;
 import com.zerobase.parkinglot.member.model.MemberDto;
+import com.zerobase.parkinglot.member.model.MemberLogin;
 import com.zerobase.parkinglot.member.model.MemberRegister;
 import com.zerobase.parkinglot.member.model.MemberResetPassword;
 import com.zerobase.parkinglot.member.model.MemberUpdate;
 import com.zerobase.parkinglot.member.service.MemberService;
-import com.zerobase.parkinglot.error.ErrorCode;
-import com.zerobase.parkinglot.member.type.Role;
+import com.zerobase.parkinglot.security.TokenProvider;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,9 @@ public class ApiMemberControllerTest {
     @MockBean
     private MemberService memberService;
 
+    @MockBean
+    private TokenProvider tokenProvider;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -51,17 +55,17 @@ public class ApiMemberControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    void MemberRegisterTest_success() throws Exception{
+    void memberRegisterTest_success() throws Exception{
 
         //given
         given(memberService.registerMember(
-            anyString(), anyString(), anyString(), anyString())
+            anyString(), anyString(), anyString(), anyString(), anyString())
         )
             .willReturn(MemberDto.builder()
                 .email("rmsguqsla@gmail.com")
                 .name("홍길동")
                 .phone("010-1212-3434")
-                .role(Role.USER.getDescription())
+                .role("ROLE_USER")
                 .regDt(LocalDateTime.now())
                 .build());
 
@@ -69,7 +73,7 @@ public class ApiMemberControllerTest {
 
 
         //then
-        mockMvc.perform(post("/api/member")
+        mockMvc.perform(post("/api/signup")
             .contentType(MediaType.APPLICATION_JSON)
             .content(
                 objectMapper.writeValueAsString(
@@ -77,7 +81,8 @@ public class ApiMemberControllerTest {
                         "rmsguqsla@gmail.com",
                         "오근협",
                         "1234",
-                        "010-1212-3434"
+                        "010-1212-3434",
+                        "ROLE_USER"
                     )
                 )
             )
@@ -88,6 +93,41 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    void loginTest_success() throws Exception{
+        //given
+        Member member = Member.builder()
+            .id(1L)
+            .email("hgd@gmail.com")
+            .password("abcde")
+            .phone("010-1234-1234")
+            .name("홍길동")
+            .role("ROLE_USER")
+            .build();
+        given(memberService.authenticate(anyString(), anyString()))
+            .willReturn(member);
+
+        String token = "ababab.cdcdcd.efefef";
+        given(tokenProvider.generateToken(anyString(), anyString()))
+            .willReturn(token);
+        //when
+        //then
+        mockMvc.perform(post("/api/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    objectMapper.writeValueAsString(
+                        new MemberLogin.Request(
+                            "rmsguqsla@gmail.com",
+                            "1234"
+                        )
+                    )
+                )
+            ).andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").value("ababab.cdcdcd.efefef"))
+            .andDo(print());
+    }
+
+    @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void MemberUpdateTest_success() throws Exception {
 
         //given
@@ -96,7 +136,7 @@ public class ApiMemberControllerTest {
                 .email("rmsguqsla@gmail.com")
                 .name("홍길동")
                 .phone("010-1212-3434")
-                .role(Role.USER.getDescription())
+                .role("ROLE_USER")
                 .regDt(LocalDateTime.now())
                 .build());
 
@@ -122,6 +162,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void MemberDeleteTest_success() throws Exception {
 
         //given
@@ -146,6 +187,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void MemberResetPasswordTest_success() throws Exception {
 
         //given
@@ -154,7 +196,7 @@ public class ApiMemberControllerTest {
                 .email("rmsguqsla@gmail.com")
                 .name("홍길동")
                 .phone("010-1212-3434")
-                .role(Role.USER.getDescription())
+                .role("ROLE_USER")
                 .updateDt(LocalDateTime.now())
                 .build());
 
@@ -179,6 +221,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void CarRegisterTest_success() throws Exception{
 
         //given
@@ -211,6 +254,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void GetCarsTest_success() throws Exception {
 
         //given
@@ -249,6 +293,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void GetCarsTest_fail_memberNotFound() throws Exception {
 
         //given
@@ -267,6 +312,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void CarUpdateTest_success() throws Exception {
 
         //given
@@ -298,6 +344,7 @@ public class ApiMemberControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void CarDeleteTest_success() throws Exception {
 
         //given

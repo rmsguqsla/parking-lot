@@ -11,8 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.parkinglot.auth.WithAuthUser;
 import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.member.exception.MemberException;
+import com.zerobase.parkinglot.member.service.MemberService;
 import com.zerobase.parkinglot.reserve.controller.ApiReserveController;
 import com.zerobase.parkinglot.reserve.exception.ReserveException;
 import com.zerobase.parkinglot.reserve.model.ReserveCancel;
@@ -21,6 +23,7 @@ import com.zerobase.parkinglot.reserve.model.ReserveInfo;
 import com.zerobase.parkinglot.reserve.model.ReserveRegister;
 import com.zerobase.parkinglot.reserve.service.ReserveService;
 import com.zerobase.parkinglot.reserve.type.StatusType;
+import com.zerobase.parkinglot.security.TokenProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,6 +43,12 @@ public class ApiReserveControllerTest {
     @MockBean
     private ReserveService reserveService;
 
+    @MockBean
+    private MemberService memberService;
+
+    @MockBean
+    private TokenProvider tokenProvider;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -47,6 +56,7 @@ public class ApiReserveControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void reserveRegisterTest() throws Exception{
 
         // given
@@ -98,6 +108,7 @@ public class ApiReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void reserveCancelTest() throws Exception {
         //given
         ReserveDto reserveDto = ReserveDto.builder()
@@ -141,6 +152,7 @@ public class ApiReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getReservesTest() throws Exception{
         //given
         List<ReserveInfo> list = Arrays.asList(
@@ -190,6 +202,7 @@ public class ApiReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getReservesTest_fail_memberNotFound() throws Exception{
         //given
         given(reserveService.getReserves(anyLong()))
@@ -204,6 +217,7 @@ public class ApiReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getReserveTest_success() throws Exception{
         //given
         ReserveInfo reserveInfo = ReserveInfo.builder()
@@ -244,6 +258,7 @@ public class ApiReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getReserveTest_fail_memberNotFound() throws Exception{
         //given
         given(reserveService.getReserve(anyLong(), anyLong()))
@@ -258,6 +273,7 @@ public class ApiReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getReserveTest_fail_reserveNotFound() throws Exception{
         //given
         given(reserveService.getReserve(anyLong(), anyLong()))

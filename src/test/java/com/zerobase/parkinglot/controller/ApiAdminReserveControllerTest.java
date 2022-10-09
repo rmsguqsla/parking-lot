@@ -8,12 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.parkinglot.auth.WithAuthUser;
 import com.zerobase.parkinglot.error.ErrorCode;
+import com.zerobase.parkinglot.member.service.MemberService;
 import com.zerobase.parkinglot.reserve.controller.ApiAdminReserveController;
 import com.zerobase.parkinglot.reserve.exception.ReserveException;
 import com.zerobase.parkinglot.reserve.model.ReserveInfo;
 import com.zerobase.parkinglot.reserve.service.ReserveService;
 import com.zerobase.parkinglot.reserve.type.StatusType;
+import com.zerobase.parkinglot.security.TokenProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,6 +35,12 @@ public class ApiAdminReserveControllerTest {
     @MockBean
     private ReserveService reserveService;
 
+    @MockBean
+    private MemberService memberService;
+
+    @MockBean
+    private TokenProvider tokenProvider;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -39,6 +48,7 @@ public class ApiAdminReserveControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getAdminReservesTest() throws Exception{
         //given
         List<ReserveInfo> list = Arrays.asList(
@@ -87,6 +97,7 @@ public class ApiAdminReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getAdminReserveTest_success() throws Exception{
         //given
         ReserveInfo reserveInfo = ReserveInfo.builder()
@@ -127,6 +138,7 @@ public class ApiAdminReserveControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getAdminReserveTest_fail_reserveNotFound() throws Exception{
         //given
         given(reserveService.getAdminReserve(anyLong()))

@@ -13,6 +13,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.zerobase.parkinglot.error.ErrorCode;
 import com.zerobase.parkinglot.parkinglot.entity.ParkingLot;
@@ -31,6 +32,7 @@ import com.zerobase.parkinglot.utils.HolidayUtil;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -758,6 +760,9 @@ public class ParkingLotServiceTest {
 
     }
 
+
+
+
     @Test
     void getUsableTickets_success() {
 
@@ -781,7 +786,7 @@ public class ParkingLotServiceTest {
                 .parkingLot(parkingLot)
                 .name("평일 오후이용권")
                 .fee(10000)
-                .startUsableTime(LocalTime.of(12,0,0))
+                .startUsableTime(LocalTime.of(0,0,0))
                 .endUsableTime(LocalTime.of(23,59,59))
                 .holidayYn(false)
                 .useYn(true)
@@ -800,6 +805,7 @@ public class ParkingLotServiceTest {
 
         given(ticketRepository.findByParkingLotAndHolidayYnAndUseYn(parkingLot, false, true))
             .willReturn(ticketList);
+
 
         // when
         List<TicketUserInfo> ticketUserInfoList = parkingLotServiceImpl.getUsableTickets(1L);

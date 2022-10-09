@@ -14,7 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.parkinglot.auth.WithAuthUser;
 import com.zerobase.parkinglot.error.ErrorCode;
+import com.zerobase.parkinglot.member.service.MemberService;
 import com.zerobase.parkinglot.parkinglot.controller.ApiAdminParkingLotController;
 import com.zerobase.parkinglot.parkinglot.entity.ParkingLot;
 import com.zerobase.parkinglot.parkinglot.entity.Ticket;
@@ -26,6 +28,7 @@ import com.zerobase.parkinglot.parkinglot.model.TicketDto;
 import com.zerobase.parkinglot.parkinglot.model.TicketRegister;
 import com.zerobase.parkinglot.parkinglot.model.TicketUpdate;
 import com.zerobase.parkinglot.parkinglot.service.ParkingLotService;
+import com.zerobase.parkinglot.security.TokenProvider;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -41,6 +44,12 @@ public class ApiAdminParkingLotControllerTest {
     @MockBean
     private ParkingLotService parkingLotService;
 
+    @MockBean
+    private MemberService memberService;
+
+    @MockBean
+    private TokenProvider tokenProvider;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -48,6 +57,7 @@ public class ApiAdminParkingLotControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void parkingLotRegisterTest_success() throws Exception{
 
         // given
@@ -89,6 +99,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getParkingLotsTest_success() throws Exception {
 
         // given
@@ -135,6 +146,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getParkingLotTest_success() throws Exception{
 
         // given
@@ -167,6 +179,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getParkingLotTest_fail_ParkingLotNotFound() throws Exception{
 
         // given
@@ -184,6 +197,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void parkingLotUpdateTest_success() throws Exception {
 
         // given
@@ -226,6 +240,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void ticketRegister_success() throws Exception{
 
         // given
@@ -272,6 +287,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getTickets_success() throws Exception{
 
         // given
@@ -315,6 +331,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getTickets_fail_ParkingLotNotFound() throws Exception{
 
         // given
@@ -334,6 +351,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getTicket_success() throws Exception{
 
         // given
@@ -371,6 +389,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getTicket_fail_ParkingLotNotFound() throws Exception{
 
         // given
@@ -390,6 +409,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void getTicket_fail_ParkingLotTicketNotMatch() throws Exception{
 
         // given
@@ -409,6 +429,7 @@ public class ApiAdminParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_ADMIN")
     void ticketUpdate_success() throws Exception{
 
         // given

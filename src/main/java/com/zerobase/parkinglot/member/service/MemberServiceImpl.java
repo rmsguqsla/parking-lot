@@ -27,6 +27,7 @@ public class MemberServiceImpl implements MemberService {
     private final CarRepository carRepository;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return findMemberByEmail(email);
     }
@@ -50,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member authenticate(String email, String password) {
         Member member = findMemberByEmail(email);
 
@@ -59,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberDto updateMember(Long id, String name, String phone) {
 
         Member member = findMemberById(id);
@@ -72,13 +75,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberDto resetPassword(Long id, String password, String newPassword) {
 
         Member member = findMemberById(id);
 
         checkPasswordEquals(password, member.getPassword());
 
-//        member.setPassword(encPassword(newPassword));
+        member.setPassword(passwordEncoder.encode(newPassword));
         member.setUpdateDt(LocalDateTime.now());
 
         return MemberDto.fromEntity(
@@ -87,6 +91,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void deleteMember(Long id, String password) {
 
         Member member = findMemberById(id);
@@ -100,6 +105,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public CarDto registerCar(Long id, String carNumber) {
 
         Member member = findMemberById(id);
@@ -116,6 +122,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public List<CarDto> getCars(Long id) {
 
         return CarDto.fromEntityList(findCarByMember(findMemberById(id)));
@@ -123,6 +130,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public CarDto updateCar(Long id, String carNumber, String newCarNumber) {
 
         Member member = findMemberById(id);
@@ -139,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void deleteCar(Long id, String carNumber) {
 
         Member member = findMemberById(id);
