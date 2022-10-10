@@ -1,5 +1,6 @@
 package com.zerobase.parkinglot.member.model;
 
+import io.swagger.annotations.ApiParam;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.Email;
@@ -19,6 +20,7 @@ public class MemberRegister {
     @NoArgsConstructor
     @Builder
     public static class Request {
+
         @Email(message = "이메일 형식으로 입력해 주세요.")
         @NotBlank(message = "이메일 입력은 필수 입니다.")
         private String email;

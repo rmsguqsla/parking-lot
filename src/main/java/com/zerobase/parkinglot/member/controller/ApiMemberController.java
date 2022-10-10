@@ -12,6 +12,7 @@ import com.zerobase.parkinglot.member.model.MemberResetPassword;
 import com.zerobase.parkinglot.member.model.MemberUpdate;
 import com.zerobase.parkinglot.member.service.MemberService;
 import com.zerobase.parkinglot.security.TokenProvider;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class ApiMemberController {
     private final TokenProvider tokenProvider;
 
     // 회원가입
+    @ApiOperation(value = "회원가입 API")
     @PostMapping("/api/signup")
     public MemberRegister.Response memberRegister(
         @RequestBody @Valid MemberRegister.Request request) {
@@ -49,6 +51,7 @@ public class ApiMemberController {
     }
 
     // 로그인
+    @ApiOperation(value = "로그인 API")
     @PostMapping("/api/signin")
     public MemberLogin.Response login(
         @RequestBody @Valid MemberLogin.Request request) {
@@ -61,6 +64,7 @@ public class ApiMemberController {
     }
 
     // 회원수정
+    @ApiOperation(value = "회원수정 API")
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/api/member/{id}")
     public MemberUpdate.Response memberUpdate(
@@ -75,6 +79,7 @@ public class ApiMemberController {
     }
 
     // 비밀번호 변경
+    @ApiOperation(value = "비밀번호 변경 API")
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/api/member/{id}/password")
     public MemberResetPassword.Response memberResetPassword(
@@ -90,6 +95,7 @@ public class ApiMemberController {
     }
 
     // 회원탈퇴
+    @ApiOperation(value = "회원탈퇴 API")
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/api/member/{id}")
     public MemberDelete.Response memberDelete(
@@ -102,6 +108,7 @@ public class ApiMemberController {
     }
 
     // 차번호 등록
+    @ApiOperation(value = "차 번호 등록 API")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/api/member/{id}/car")
     public CarRegister.Response carRegister(
@@ -115,6 +122,7 @@ public class ApiMemberController {
     }
 
     // 등록된 차번호 목록
+    @ApiOperation(value = "차 번호 목록 API")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/member/{id}/cars")
     public List<CarInfo> getCars(
@@ -125,6 +133,7 @@ public class ApiMemberController {
     }
 
     // 차번호 수정
+    @ApiOperation(value = "차 번호 수정 API")
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/api/member/{id}/car")
     public CarUpdate.Response carUpdate(
@@ -139,6 +148,7 @@ public class ApiMemberController {
     }
 
     // 차번호 삭제
+    @ApiOperation(value = "차 번호 삭제 API")
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/api/member/{id}/car")
     public CarDelete.Response carDelete(

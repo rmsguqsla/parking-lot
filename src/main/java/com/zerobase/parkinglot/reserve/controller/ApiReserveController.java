@@ -5,6 +5,7 @@ import com.zerobase.parkinglot.reserve.model.ReserveCancel;
 import com.zerobase.parkinglot.reserve.model.ReserveInfo;
 import com.zerobase.parkinglot.reserve.model.ReserveRegister;
 import com.zerobase.parkinglot.reserve.service.ReserveService;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class ApiReserveController {
     private final ReserveService reserveService;
 
     // 예약
+    @ApiOperation(value = "예약 API")
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/api/member/{id}/reserve")
     @ReserveLock
@@ -36,6 +38,7 @@ public class ApiReserveController {
     }
 
     // 예약 취소
+    @ApiOperation(value = "예약 취소 API")
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/api/member/{id}/reserve")
     @ReserveLock
@@ -44,6 +47,7 @@ public class ApiReserveController {
     }
 
     // 사용자 예약 목록
+    @ApiOperation(value = "나의 예약 목록 API")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/member/{id}/reserves")
     public List<ReserveInfo> getReserves(@PathVariable Long id) {
@@ -51,6 +55,7 @@ public class ApiReserveController {
     }
 
     // 사용자 예약 상세
+    @ApiOperation(value = "나의 예약 상세 API")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/api/member/{memberId}/reserve/{reserveId}")
     public ReserveInfo getReserve(@PathVariable(value = "memberId") Long memberId, @PathVariable(value = "reserveId") Long reserveId) {
