@@ -1,9 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:mariadb://localhost:3306/parkinglot
-    driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: qwedfg123
+  profiles:
+    include: secret
 
   jpa:
     generate-ddl: true
@@ -11,5 +8,10 @@ spring:
       ddl-auto: update
     show-sql: true
 
-geocoding:
-  key: AIzaSyB5J_0k9aKuHEIjTJR7fYwoPx0kSU09lNQ
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

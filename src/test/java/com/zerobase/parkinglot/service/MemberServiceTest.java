@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.zerobase.parkinglot.member.entity.Car;
 import com.zerobase.parkinglot.member.entity.Member;
@@ -18,7 +19,6 @@ import com.zerobase.parkinglot.member.repository.CarRepository;
 import com.zerobase.parkinglot.member.repository.MemberRepository;
 import com.zerobase.parkinglot.member.service.MemberServiceImpl;
 import com.zerobase.parkinglot.error.ErrorCode;
-import com.zerobase.parkinglot.member.type.Role;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,13 +28,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
 
     @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
     private MemberRepository memberRepository;
-
     @Mock
     private CarRepository carRepository;
 
@@ -45,22 +47,26 @@ public class MemberServiceTest {
     void registerMemberTest_success() {
 
         //given
-        given(memberRepository.countByEmail(anyString()))
-            .willReturn(0);
+
+        given(memberRepository.existsByEmail(anyString()))
+            .willReturn(false);
+
+        when(passwordEncoder.encode("1234")).thenReturn("abcde");
 
         given(memberRepository.save(any()))
             .willReturn(
                 Member.builder()
                     .email("test@gmail.com")
                     .name("홍길동")
+                    .password("abcde")
                     .phone("010-1234-5678")
-                    .role(Role.USER.getDescription())
+                    .role("ROLE_USER")
                     .build()
             );
 
         //when
         MemberDto memberDto = memberServiceImpl.registerMember ("test@gmail.com",
-                "홍길동", "1234", "010-1234-5678");
+                "홍길동", "1234", "010-1234-5678", "ROLE_USER");
 
         ArgumentCaptor<Member> captor = ArgumentCaptor.forClass(Member.class);
 
@@ -69,20 +75,20 @@ public class MemberServiceTest {
         assertEquals("test@gmail.com", memberDto.getEmail());
         assertEquals("홍길동", memberDto.getName());
         assertEquals("010-1234-5678", memberDto.getPhone());
-        assertEquals(Role.USER.getDescription(), memberDto.getRole());
+        assertEquals("ROLE_USER", memberDto.getRole());
     }
 
     @Test
     void registerMemberTest_fail_MemberAlreadyExist() {
 
         //given
-        given(memberRepository.countByEmail(anyString()))
-            .willReturn(1);
+        given(memberRepository.existsByEmail(anyString()))
+            .willReturn(true);
 
         //when
         MemberException exception = assertThrows(MemberException.class,
             () -> memberServiceImpl.registerMember ("test@gmail.com",
-                "홍길동", "1234", "010-1234-5678"));
+                "홍길동", "1234", "010-1234-5678", "ROLE_USER"));
 
         //then
         assertEquals(ErrorCode.MEMBER_ALREADY_EXIST, exception.getErrorCode());

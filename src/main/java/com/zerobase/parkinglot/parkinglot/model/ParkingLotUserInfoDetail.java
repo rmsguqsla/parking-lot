@@ -26,14 +26,14 @@ public class ParkingLotUserInfoDetail {
 
     private List<TicketUserInfo> ticketInfoList;
 
-    public static ParkingLotUserInfoDetail from(ParkingLotDto dto, int reservedCount,
+    public static ParkingLotUserInfoDetail from(ParkingLotDto dto,
         List<TicketUserInfo> ticketUserInfoList) {
         return ParkingLotUserInfoDetail.builder()
             .id(dto.getId())
             .name(dto.getName())
             .address(dto.getAddress())
             .spaceCount(dto.getSpaceCount())
-            .remainCount(dto.getSpaceCount() - reservedCount)
+            .remainCount(dto.getSpaceCount() - dto.getReserveCount())
             .ticketInfoList(ticketUserInfoList)
             .build();
     }

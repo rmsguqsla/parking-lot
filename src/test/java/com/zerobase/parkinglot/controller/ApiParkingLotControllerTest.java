@@ -10,21 +10,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.parkinglot.auth.WithAuthUser;
 import com.zerobase.parkinglot.error.ErrorCode;
-import com.zerobase.parkinglot.parkinglot.controller.ApiAdminParkingLotController;
+import com.zerobase.parkinglot.member.service.MemberService;
 import com.zerobase.parkinglot.parkinglot.controller.ApiParkingLotController;
 import com.zerobase.parkinglot.parkinglot.exception.ParkingLotException;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotDto;
 import com.zerobase.parkinglot.parkinglot.model.ParkingLotUserInfo;
 import com.zerobase.parkinglot.parkinglot.model.TicketUserInfo;
 import com.zerobase.parkinglot.parkinglot.service.ParkingLotService;
-import com.zerobase.parkinglot.parkinglot.type.SearchType;
+import com.zerobase.parkinglot.security.TokenProvider;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ApiParkingLotController.class)
@@ -33,6 +35,12 @@ public class ApiParkingLotControllerTest {
     @MockBean
     private ParkingLotService parkingLotService;
 
+    @MockBean
+    private MemberService memberService;
+
+    @MockBean
+    private TokenProvider tokenProvider;
+
     @Autowired
     MockMvc mockMvc;
 
@@ -40,6 +48,7 @@ public class ApiParkingLotControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getParkingLotsMyAroundTest_success() throws Exception{
 
         // given
@@ -80,6 +89,7 @@ public class ApiParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getParkingLotsSearchTest_success() throws Exception{
 
         // given
@@ -121,6 +131,7 @@ public class ApiParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getParkingLotDetailTest_success() throws Exception{
 
         // given
@@ -169,6 +180,7 @@ public class ApiParkingLotControllerTest {
     }
 
     @Test
+    @WithAuthUser(email = "hgd@gmail.com", role = "ROLE_USER")
     void getParkingLotUserTest_fail_ParKingLotNotFound() throws Exception{
 
         // given

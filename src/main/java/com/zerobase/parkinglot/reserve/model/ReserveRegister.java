@@ -1,12 +1,13 @@
 package com.zerobase.parkinglot.reserve.model;
 
+import com.zerobase.parkinglot.aop.ParkingLotIdInterface;
 import java.time.LocalDateTime;
-import javax.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public class ReserveRegister {
 
@@ -14,8 +15,7 @@ public class ReserveRegister {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Builder
-    public static class Request {
+    public static class Request implements ParkingLotIdInterface {
         private Long carId;
 
         private Long parkingLotId;
@@ -49,6 +49,8 @@ public class ReserveRegister {
 
         private LocalDateTime reserveDt;
 
+        private LocalDateTime reserveEndDt;
+
         public static ReserveRegister.Response from(ReserveDto reserveDto) {
             return Response.builder()
                 .name(reserveDto.getName())
@@ -59,6 +61,7 @@ public class ReserveRegister {
                 .minEstimatedDt(reserveDto.getMinEstimatedDt())
                 .maxEstimatedDt(reserveDto.getMaxEstimatedDt())
                 .reserveDt(reserveDto.getReserveDt())
+                .reserveEndDt(reserveDto.getReserveEndDt())
                 .build();
         }
     }

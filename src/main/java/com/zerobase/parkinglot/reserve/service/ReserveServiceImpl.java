@@ -45,10 +45,6 @@ public class ReserveServiceImpl implements ReserveService{
 
         ParkingLot parkingLot = findParkingLotByIdAndUseYn(parkingLotId);
 
-        // Using 상태의 예약 수를 파악
-        // if 예약 수 >= 주차장 자리 => 예약 x
-        checkReserveFull(parkingLot);
-
         Member member = findMemberById(memberId);
 
         Car car = findCarByIdAndMember(carId, member);
@@ -67,6 +63,7 @@ public class ReserveServiceImpl implements ReserveService{
         // 최대 오늘을 넘길 수 없음
         LocalDateTime reserveEndDt = getReserveEndDt(minEstimatedDt, ticket);
 
+        parkingLot.plusReserveCount();
 
         return ReserveDto.fromEntity(
             reserveRepository.save(
@@ -86,14 +83,6 @@ public class ReserveServiceImpl implements ReserveService{
                     .status(StatusType.Using)
                     .build()
             ));
-    }
-
-    private void checkReserveFull(ParkingLot parkingLot) {
-        int reserveCount = reserveRepository.countByParkingLotAndAddressAndStatus(parkingLot.getName(), parkingLot.getAddress(), StatusType.Using);
-        int spaceCount = parkingLot.getSpaceCount();
-        if (reserveCount >= spaceCount) {
-            throw new ReserveException(ErrorCode.RESERVE_FULL);
-        }
     }
 
     private LocalDateTime getReserveEndDt(LocalDateTime minEstimatedDt, Ticket ticket) {
@@ -134,6 +123,8 @@ public class ReserveServiceImpl implements ReserveService{
         return ReserveDto.fromEntity(reserveRepository.save(reserve));
     }
 
+    // 사용자 예약 목록
+    @Transactional
     @Override
     public List<ReserveInfo> getReserves(Long id) {
         Member member = findMemberById(id);
@@ -141,17 +132,23 @@ public class ReserveServiceImpl implements ReserveService{
         return ReserveInfo.fromEntityList(reserveList);
     }
 
+    // 관리자 예약 목록
+    @Transactional
     @Override
     public List<ReserveInfo> getAdminReserves() {
         return ReserveInfo.fromEntityList(reserveRepository.findAll());
     }
 
+    // 사용자 예약 상세
+    @Transactional
     @Override
     public ReserveInfo getReserve(Long memberId, Long reserveId) {
         Member member = findMemberById(memberId);
         return ReserveInfo.fromEntity(findReserveByIdAndEmail(reserveId, member.getEmail()));
     }
 
+    // 관리자 예약 상세
+    @Transactional
     @Override
     public ReserveInfo getAdminReserve(Long id) {
         return ReserveInfo.fromEntity(findReserveById(id));
@@ -171,7 +168,6 @@ public class ReserveServiceImpl implements ReserveService{
             throw new ReserveException(ErrorCode.NOT_CANCEL_RESERVE);
         }
     }
-
 
     private void checkStatusIsUsing(Reserve reserve) {
         if (reserve.getStatus().equals(StatusType.Cancel)) {
@@ -219,17 +215,16 @@ public class ReserveServiceImpl implements ReserveService{
         // 조건2. 분은 0~59분
         // 조건3. 현재시간보다 과거시간은 x
         // 조건4. 최소 이용권 끝 사용 가능 시간 보다 1시간 전에 예약해야 함
-        log.info(LocalDateTime.now().toString());
-        LocalTime estimateTime = LocalTime.of(estimatedHour, estimatedMinute);
         if (estimatedHour < 0 || estimatedHour > 23
             || estimatedMinute < 0 || estimatedMinute > 59) {
             throw new ReserveException(ErrorCode.INVALID_RANGE_HOUR_MINUTE);
         }
+        LocalTime estimateTime = LocalTime.of(estimatedHour, estimatedMinute);
         if (LocalTime.now().compareTo(estimateTime) > 0) {
-            throw new RuntimeException("현재시간보다 과거입니다.");
+            throw new ReserveException(ErrorCode.TIME_IN_THE_PAST);
         }
         if(getEndUsableTime(ticketId, parkingLot).isBefore(estimateTime.plusHours(1))) {
-            throw new RuntimeException("이용권 끝 유효시간보다 최소 1시간 일찍 예약하셔야합니다.");
+            throw new ReserveException(ErrorCode.RESERVE_ONE_HOUR_EARLIER);
         }
         return LocalDateTime.of(LocalDate.now(), LocalTime.of(estimatedHour, estimatedMinute));
     }
